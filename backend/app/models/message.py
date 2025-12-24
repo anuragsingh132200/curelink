@@ -15,7 +15,7 @@ class Message(Base):
     content = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     is_onboarding = Column(Boolean, default=False)
-    metadata = Column(String, nullable=True)  # JSON string for additional metadata
+    meta_data = Column(String, nullable=True)  # JSON string for additional metadata
     tokens_used = Column(Integer, default=0)
 
     # Relationships

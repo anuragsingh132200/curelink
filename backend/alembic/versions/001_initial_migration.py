@@ -43,7 +43,7 @@ def upgrade() -> None:
         sa.Column('content', sa.Text(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('is_onboarding', sa.Boolean(), nullable=True, default=False),
-        sa.Column('metadata', sa.String(), nullable=True),
+        sa.Column('meta_data', sa.String(), nullable=True),
         sa.Column('tokens_used', sa.Integer(), nullable=True, default=0),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id')
