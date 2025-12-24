@@ -1,0 +1,21 @@
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f2f5;
+  max-width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .app {
+    max-width: 900px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app {
+    max-width: 1100px;
+  }
+}
