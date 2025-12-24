@@ -659,7 +659,7 @@ MIT License - feel free to use this for your own projects!
 
 ## Contact
 
-For questions or feedback, reach out at: jai@cure.link
+For questions or feedback, reach out at: anurag132200@gmail.com
 
 ---
 
