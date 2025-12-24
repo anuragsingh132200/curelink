@@ -15,10 +15,10 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://localhost:6379"
 
     # LLM Configuration
-    ANTHROPIC_API_KEY: Optional[str] = None
+    GEMINI_API_KEY: Optional[str] = None
     OPENAI_API_KEY: Optional[str] = None
-    LLM_PROVIDER: str = "anthropic"  # "anthropic" or "openai"
-    LLM_MODEL: str = "claude-3-5-sonnet-20241022"
+    LLM_PROVIDER: str = "gemini"  # "gemini" or "openai"
+    LLM_MODEL: str = "gemini-2.0-flash-exp"
     MAX_CONTEXT_TOKENS: int = 8000
     MAX_RESPONSE_TOKENS: int = 1000
 

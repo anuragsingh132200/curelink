@@ -15,7 +15,7 @@ if not exist .env (
     echo .env file created
     echo.
     echo IMPORTANT: Please edit .env and add your API keys:
-    echo    - ANTHROPIC_API_KEY or OPENAI_API_KEY
+    echo    - GEMINI_API_KEY or OPENAI_API_KEY
     echo.
     pause
 )

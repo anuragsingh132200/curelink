@@ -1,4 +1,4 @@
-import anthropic
+import google.generativeai as genai
 import openai
 from typing import List, Dict, Optional
 from app.core.config import settings
@@ -9,8 +9,9 @@ import tiktoken
 class LLMService:
     def __init__(self):
         self.provider = settings.LLM_PROVIDER
-        if self.provider == "anthropic":
-            self.client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        if self.provider == "gemini":
+            genai.configure(api_key=settings.GEMINI_API_KEY)
+            self.client = genai.GenerativeModel(settings.LLM_MODEL)
             self.model = settings.LLM_MODEL
         elif self.provider == "openai":
             self.client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
@@ -19,8 +20,8 @@ class LLMService:
     def count_tokens(self, text: str) -> int:
         """Count tokens in text"""
         try:
-            if self.provider == "anthropic":
-                # Rough estimation for Claude (1 token ≈ 4 characters)
+            if self.provider == "gemini":
+                # Rough estimation for Gemini (1 token ≈ 4 characters)
                 return len(text) // 4
             else:
                 encoding = tiktoken.encoding_for_model("gpt-4")
@@ -144,18 +145,43 @@ class LLMService:
             system_prompt = self.create_system_prompt(user_info, memories, protocols)
 
             # Prepare messages
-            if self.provider == "anthropic":
+            if self.provider == "gemini":
                 # Trim conversation to fit context window
                 available_tokens = settings.MAX_CONTEXT_TOKENS - self.count_tokens(system_prompt)
                 trimmed_messages = self.trim_conversation_history(messages, available_tokens)
 
-                response = self.client.messages.create(
-                    model=self.model,
-                    max_tokens=settings.MAX_RESPONSE_TOKENS,
-                    system=system_prompt,
-                    messages=trimmed_messages,
+                # Convert messages to Gemini format
+                # Gemini uses "user" and "model" roles
+                gemini_history = []
+                for i, msg in enumerate(trimmed_messages[:-1]):  # All but last message
+                    role = "user" if msg["role"] == "user" else "model"
+                    gemini_history.append({
+                        "role": role,
+                        "parts": [msg["content"]]
+                    })
+
+                # Configure generation
+                generation_config = genai.types.GenerationConfig(
+                    max_output_tokens=settings.MAX_RESPONSE_TOKENS,
+                    temperature=0.7,
                 )
-                return response.content[0].text
+
+                # Create model with system instruction
+                model_with_system = genai.GenerativeModel(
+                    self.model,
+                    system_instruction=system_prompt
+                )
+
+                # Start chat with history
+                chat = model_with_system.start_chat(history=gemini_history)
+
+                # Send the last message and get response
+                last_message = trimmed_messages[-1]["content"] if trimmed_messages else ""
+                response = chat.send_message(
+                    last_message,
+                    generation_config=generation_config
+                )
+                return response.text
 
             elif self.provider == "openai":
                 # Prepare messages with system prompt

@@ -5,16 +5,16 @@ Get up and running in 5 minutes!
 ## Prerequisites
 
 - Docker Desktop installed
-- API key from Anthropic (Claude) or OpenAI (GPT)
+- API key from Google Gemini or OpenAI (GPT)
 
 ## Steps
 
 ### 1. Get Your API Key
 
-**Option A: Anthropic Claude (Recommended)**
-- Go to https://console.anthropic.com/
-- Sign up or log in
-- Create an API key
+**Option A: Google Gemini (Recommended)**
+- Go to https://aistudio.google.com/app/apikey
+- Sign in with your Google account
+- Click "Create API Key"
 - Copy it
 
 **Option B: OpenAI GPT**
@@ -28,8 +28,8 @@ Get up and running in 5 minutes!
 Open the `.env` file and add your API key:
 
 ```env
-# For Anthropic Claude
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+# For Google Gemini
+GEMINI_API_KEY=your_gemini_api_key_here
 
 # OR for OpenAI
 OPENAI_API_KEY=sk-xxxxxxxxxxxxx

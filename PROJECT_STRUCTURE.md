@@ -144,7 +144,7 @@ chat_service.py
         ├── Add memories
         ├── Add medical protocols
         ├── Trim conversation history
-        └── Call Anthropic/OpenAI API
+        └── Call Gemini/OpenAI API
             ↓
         AI Response
             ↓
@@ -311,12 +311,12 @@ CREATE TABLE memories (
 ## Environment Variables
 
 Required:
-- `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` - LLM API key
+- `GEMINI_API_KEY` or `OPENAI_API_KEY` - LLM API key
 - `DATABASE_URL` - PostgreSQL connection string
 - `REDIS_URL` - Redis connection string
 
 Optional:
-- `LLM_PROVIDER` - 'anthropic' or 'openai' (default: anthropic)
+- `LLM_PROVIDER` - 'gemini' or 'openai' (default: gemini)
 - `LLM_MODEL` - Model name
 - `MAX_CONTEXT_TOKENS` - Max tokens for context (default: 8000)
 - `MAX_RESPONSE_TOKENS` - Max tokens for response (default: 1000)
@@ -330,7 +330,7 @@ Optional:
 - **SQLAlchemy** - SQL toolkit and ORM
 - **Alembic** - Database migration tool
 - **Pydantic** - Data validation
-- **Anthropic/OpenAI SDK** - LLM integration
+- **Google Gemini/OpenAI SDK** - LLM integration
 - **Redis** - Caching layer
 - **PostgreSQL** - Database
 

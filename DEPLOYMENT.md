@@ -9,7 +9,7 @@ The fastest way to get the application running:
 cd curelink
 
 # 2. Set your API key in .env
-# Edit .env and add your ANTHROPIC_API_KEY or OPENAI_API_KEY
+# Edit .env and add your GEMINI_API_KEY or OPENAI_API_KEY
 
 # 3. Start everything
 docker-compose up --build
@@ -41,9 +41,9 @@ Push your code to GitHub.
 
 5. Add Environment Variables:
    ```
-   ANTHROPIC_API_KEY=your_key_here
-   LLM_PROVIDER=anthropic
-   LLM_MODEL=claude-3-5-sonnet-20241022
+   GEMINI_API_KEY=your_key_here
+   LLM_PROVIDER=gemini
+   LLM_MODEL=gemini-2.0-flash-exp
    DATABASE_URL=<from PostgreSQL addon>
    REDIS_URL=<from Redis addon>
    ENVIRONMENT=production

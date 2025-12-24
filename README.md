@@ -1,13 +1,13 @@
 # Disha - AI Health Coach
 
-**India's first AI health coach** - A WhatsApp-like chat interface where users can get personalized health guidance and support from an AI health coach powered by Claude/GPT.
+**India's first AI health coach** - A WhatsApp-like chat interface where users can get personalized health guidance and support from an AI health coach powered by Google Gemini or OpenAI GPT.
 
 ## Features
 
 - **WhatsApp-like Chat Interface**: Clean, intuitive chat UI with real-time messaging
 - **WebSocket Support**: Real-time communication with typing indicators
 - **Infinite Scroll**: Load older messages automatically when scrolling up
-- **LLM Integration**: Powered by Anthropic Claude or OpenAI GPT
+- **LLM Integration**: Powered by Google Gemini or OpenAI GPT
 - **Context Management**: Intelligent token management to handle context overflow
 - **Long-term Memory**: Extracts and stores important user information across conversations
 - **Medical Protocols**: Built-in knowledge base for common health conditions (fever, stomach ache, headache, etc.)
@@ -21,7 +21,7 @@
 - **Framework**: FastAPI (Python)
 - **Database**: PostgreSQL
 - **Cache**: Redis
-- **LLM**: Anthropic Claude / OpenAI GPT
+- **LLM**: Google Gemini / OpenAI GPT
 - **ORM**: SQLAlchemy
 - **Migrations**: Alembic
 - **WebSocket**: Native FastAPI WebSocket support
@@ -172,7 +172,7 @@ frontend/
 ### Prerequisites
 
 - Docker & Docker Compose installed
-- API key for Anthropic Claude OR OpenAI GPT
+- API key for Google Gemini OR OpenAI GPT
 
 ### Local Setup (Step by Step)
 
@@ -195,15 +195,15 @@ Edit `.env` and add your API keys:
 
 ```env
 # Choose your LLM provider
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+GEMINI_API_KEY=your_gemini_api_key_here
 # OR
 OPENAI_API_KEY=sk-xxxxxxxxxxxxx
 
-# Set the provider (anthropic or openai)
-LLM_PROVIDER=anthropic
+# Set the provider (gemini or openai)
+LLM_PROVIDER=gemini
 
-# For Anthropic Claude
-LLM_MODEL=claude-3-5-sonnet-20241022
+# For Google Gemini
+LLM_MODEL=gemini-2.0-flash-exp
 
 # For OpenAI
 # LLM_MODEL=gpt-4-turbo-preview
@@ -388,9 +388,9 @@ WS /api/chat/ws/{user_id}
 
 ## LLM Implementation Details
 
-### Provider: Anthropic Claude
+### Provider: Google Gemini
 
-**Model**: `claude-3-5-sonnet-20241022`
+**Model**: `gemini-2.0-flash-exp`
 
 **Prompting Strategy**:
 
@@ -439,6 +439,13 @@ Relevant Medical Protocols:
 Set `LLM_PROVIDER=openai` and `LLM_MODEL=gpt-4-turbo-preview` in `.env`.
 
 The system adapts the prompting format for OpenAI's API.
+
+### Switching to Other Models
+
+**Available Gemini Models**:
+- `gemini-2.0-flash-exp` - Latest experimental model (Recommended)
+- `gemini-1.5-pro` - Stable production model
+- `gemini-1.5-flash` - Faster, optimized model
 
 ## Testing
 
@@ -628,9 +635,9 @@ ENVIRONMENT=production
 SECRET_KEY=<strong-random-secret>
 
 # LLM
-ANTHROPIC_API_KEY=<your-key>
-LLM_PROVIDER=anthropic
-LLM_MODEL=claude-3-5-sonnet-20241022
+GEMINI_API_KEY=<your-key>
+LLM_PROVIDER=gemini
+LLM_MODEL=gemini-2.0-flash-exp
 
 # Database (from hosting provider)
 DATABASE_URL=<production-database-url>
