@@ -19,9 +19,10 @@ class ChatService:
             if user:
                 return user
 
-        # Create new user
+        # Create new user with the provided user_id or generate a new one
+        new_user_id = uuid.UUID(user_id) if user_id else uuid.uuid4()
         user = User(
-            id=uuid.uuid4(),
+            id=new_user_id,
             medical_conditions=[],
             medications=[],
             allergies=[],

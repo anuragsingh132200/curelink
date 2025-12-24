@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: Optional[str] = None
     OPENAI_API_KEY: Optional[str] = None
     LLM_PROVIDER: str = "gemini"  # "gemini" or "openai"
-    LLM_MODEL: str = "gemini-2.0-flash-exp"
+    LLM_MODEL: str = "gemini-2.5-flash"  # Latest Gemini Flash model
     MAX_CONTEXT_TOKENS: int = 8000
     MAX_RESPONSE_TOKENS: int = 1000
 

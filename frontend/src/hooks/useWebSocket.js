@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { chatAPI } from '../services/api';
 
 const WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:8000';
 
@@ -6,6 +7,7 @@ const useWebSocket = (userId) => {
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const wsRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const reconnectAttempts = useRef(0);
@@ -27,12 +29,28 @@ const useWebSocket = (userId) => {
           const data = JSON.parse(event.data);
 
           if (data.type === 'message') {
-            setMessages((prev) => [...prev, {
+            const newMessage = {
               id: data.id,
               role: data.role,
               content: data.content,
               created_at: data.created_at,
-            }]);
+            };
+
+            setMessages((prev) => {
+              // For user messages, replace temp message with real one
+              if (data.role === 'user') {
+                const withoutTemp = prev.filter(msg => !msg.id.toString().startsWith('temp-'));
+                return [...withoutTemp, newMessage];
+              }
+
+              // For assistant messages, check if it already exists to avoid duplicates
+              const exists = prev.some(msg => msg.id === data.id);
+              if (exists) {
+                return prev;
+              }
+
+              return [...prev, newMessage];
+            });
           } else if (data.type === 'typing_indicator') {
             setIsTyping(data.is_typing);
           } else if (data.type === 'error') {
@@ -69,6 +87,17 @@ const useWebSocket = (userId) => {
 
   const sendMessage = useCallback((content) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      // Immediately add user message to UI for instant feedback
+      const userMessage = {
+        id: `temp-${Date.now()}`,
+        role: 'user',
+        content,
+        created_at: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, userMessage]);
+
+      // Send message through WebSocket
       wsRef.current.send(JSON.stringify({
         type: 'message',
         content,
@@ -87,6 +116,26 @@ const useWebSocket = (userId) => {
       wsRef.current = null;
     }
   }, []);
+
+  // Load initial messages when userId is available
+  useEffect(() => {
+    const loadInitialMessages = async () => {
+      if (!userId || initialLoadComplete) return;
+
+      try {
+        const result = await chatAPI.getMessages(userId, 1, 50);
+        if (result.messages && result.messages.length > 0) {
+          setMessages(result.messages);
+        }
+        setInitialLoadComplete(true);
+      } catch (error) {
+        console.error('Error loading initial messages:', error);
+        setInitialLoadComplete(true);
+      }
+    };
+
+    loadInitialMessages();
+  }, [userId, initialLoadComplete]);
 
   useEffect(() => {
     connect();

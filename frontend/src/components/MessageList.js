@@ -12,15 +12,21 @@ const MessageList = ({ messages, isTyping, userId }) => {
   const [hasMore, setHasMore] = useState(true);
   const [oldMessages, setOldMessages] = useState([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const prevMessagesLengthRef = useRef(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
-    // Scroll to bottom on initial load and new messages
-    if (isInitialLoad || messages.length > 0) {
+    // Scroll to bottom when new messages arrive
+    if (messages.length > prevMessagesLengthRef.current) {
       scrollToBottom();
+      prevMessagesLengthRef.current = messages.length;
+    }
+
+    // Mark initial load as complete once we have messages
+    if (isInitialLoad && messages.length > 0) {
       setIsInitialLoad(false);
     }
   }, [messages, isInitialLoad]);
@@ -37,7 +43,7 @@ const MessageList = ({ messages, isTyping, userId }) => {
 
     setLoading(true);
     try {
-      const result = await chatAPI.getMessages(userId, page + 1);
+      const result = await chatAPI.getMessages(userId, page + 1, 20);
 
       if (result.messages && result.messages.length > 0) {
         setOldMessages((prev) => [...result.messages, ...prev]);
@@ -48,6 +54,7 @@ const MessageList = ({ messages, isTyping, userId }) => {
       }
     } catch (error) {
       console.error('Error loading messages:', error);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
@@ -79,6 +86,12 @@ const MessageList = ({ messages, isTyping, userId }) => {
       {!hasMore && allMessages.length > 0 && (
         <div className="start-of-conversation">
           <p>Start of conversation</p>
+        </div>
+      )}
+
+      {allMessages.length === 0 && !isInitialLoad && (
+        <div className="empty-state">
+          <p>No messages yet. Start a conversation!</p>
         </div>
       )}
 

@@ -40,8 +40,10 @@ services:
     environment:
       DATABASE_URL: postgresql://curelink:curelink_password@postgres:5432/curelink_db
       REDIS_URL: redis://redis:6379
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      LLM_PROVIDER: gemini
       ENVIRONMENT: production
     ports:
       - "8000:8000"

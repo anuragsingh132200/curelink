@@ -89,21 +89,10 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
     db = next(get_db())
 
     try:
-        # Initialize chat if needed
+        # Initialize chat if needed (creates onboarding message in DB if first time)
+        # Don't send it via WebSocket since frontend loads messages via REST API
         user = chat_service.get_or_create_user(db, user_id)
-        initial_message = await chat_service.initialize_chat(db, str(user.id))
-
-        if initial_message:
-            await manager.send_message(
-                user_id,
-                {
-                    "type": "message",
-                    "role": "assistant",
-                    "content": initial_message.content,
-                    "id": str(initial_message.id),
-                    "created_at": initial_message.created_at.isoformat(),
-                },
-            )
+        await chat_service.initialize_chat(db, str(user.id))
 
         while True:
             # Receive message from client
@@ -164,19 +153,24 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                     )
 
                 except Exception as e:
+                    print(f"Error processing message: {type(e).__name__}: {str(e)}")
+                    import traceback
+                    traceback.print_exc()
                     await manager.send_typing_indicator(user_id, False)
                     await manager.send_message(
                         user_id,
                         {
                             "type": "error",
-                            "message": "Sorry, I encountered an error processing your message.",
+                            "message": f"Sorry, I encountered an error: {str(e)}",
                         },
                     )
 
     except WebSocketDisconnect:
         manager.disconnect(user_id)
     except Exception as e:
-        print(f"WebSocket error: {e}")
+        print(f"WebSocket error: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         manager.disconnect(user_id)
     finally:
         db.close()
